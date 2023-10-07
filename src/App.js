@@ -2,7 +2,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import Total from './components/Total';
-import List from './components/List';
+import Kitchen from './components/Kitchen';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         </Row>
         <Row>
           <Col>
-            <List/>
+            <Kitchen/>
           </Col>
         </Row>
       </Container>
