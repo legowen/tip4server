@@ -1,35 +1,25 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import { Container, Paper, TextField, Typography, List, ListItem, ListItemText } from "@mui/material";
 
-function Kitchen() {
+function Kitchen({ topTotal }) {
+  const kitchenTotal = topTotal * 0.45;
   const [people, setPeople] = useState([]);
   const [name, setName] = useState("");
-  const [workHours, setWorkHours] = useState("");
-  const tipPercentage = 0.45; // Assuming the tip percentage is constant
+  const [workHours, setWorkHours] = useState(0.5); // Default to 0.5
 
   const handleAddPerson = () => {
     if (name && workHours) {
+      const dailyTip = (kitchenTotal / people.length) * workHours;
       const newPerson = {
-        name: name,
-        workHours: parseFloat(workHours),
+        name,
+        workHours,
+        dailyTip,
       };
       setPeople([...people, newPerson]);
       setName("");
-      setWorkHours("");
+      setWorkHours(0.5);
     }
   };
-
-  const totalTip = people.reduce((acc, person) => acc + person.workHours, 0) * tipPercentage;
 
   return (
     <Container maxWidth="sm">
@@ -37,44 +27,27 @@ function Kitchen() {
         <Typography variant="h4" gutterBottom>
           Kitchen
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h6">People who worked:</Typography>
-            <List>
-              {people.map((person, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={`${person.name} - ${person.workHours} hours`}
-                  />
-                </ListItem>
-              ))}
-            </List>
-            <Typography variant="h6">Total Tip: ${totalTip.toFixed(2)}</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="h6">Add a Person:</Typography>
-            <TextField
-              label="Name"
-              fullWidth
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <TextField
-              label="Work Hours"
-              type="number"
-              fullWidth
-              value={workHours}
-              onChange={(e) => setWorkHours(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddPerson}
-            >
-              Add Person
-            </Button>
-          </Grid>
-        </Grid>
+        <Typography variant="h6">Total Tip for Kitchen: ${kitchenTotal.toFixed(2)}</Typography>
+        <TextField label="Name" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
+        <TextField
+          label="Work Hours"
+          type="number"
+          step="0.5"
+          fullWidth
+          value={workHours}
+          onChange={(e) => setWorkHours(parseFloat(e.target.value))}
+        />
+        <button onClick={handleAddPerson}>Add Person</button>
+        <Typography variant="h6">Daily Tips:</Typography>
+        <List>
+          {people.map((person, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={`${person.name} - Work Hours: ${person.workHours}, Daily Tip: $${person.dailyTip.toFixed(2)}`}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Paper>
     </Container>
   );
